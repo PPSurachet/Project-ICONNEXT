@@ -260,5 +260,58 @@ router.post('/deleteposition', async function (req, res, next) {
   res.redirect('/position');
 });
 
+router.get('/leave/staff', async function (req, res, next) {
+  const staff = await db.getStaff();
+  res.render('LeaveStaff', { Staffs: staff.recordset });
+});
+
+router.get('/leave/outsource', async function (req, res, next) {
+  const staff = await db.getOutsouce();
+  res.render('LeaveOutsource', { Staffs: staff.recordset });
+});
+
+router.get('/viewleave/:ID', async function (req, res, next) {
+  const ID = req.params.ID
+  const getLeaveByID = await db.getLeaveByID(ID);
+  var staff;
+  var output;
+  if (ID.substring(0, 1) == "O") {
+    staff = await db.getOutsouceByID(ID);
+    output = {
+      ID: staff.recordset[0].ID,
+      Name: staff.recordset[0].Name,
+      SurName: staff.recordset[0].SurName,
+    }
+  } else {
+    staff = await db.getStaffByID(ID);
+    output = {
+      ID: staff.recordset[0].EID,
+      Name: staff.recordset[0].Name,
+      SurName: staff.recordset[0].SurName,
+    }
+  }
+  res.render('Leave', { Staffs: output, Leaves: getLeaveByID.recordset })
+});
+
+router.post('/addLeave', async function (req, res, next) {
+  const ID = req.body.ID;
+  const StartDate = req.body.StartDate;
+  const EndDate = req.body.EndDate;
+  const Annotation = req.body.Annotation;
+  const addLeave = [StartDate, EndDate, Annotation, ID]
+  await db.addLeave(addLeave);
+  const getLeave = await db.getLeaveNewInsert();
+  await db.updateLeaveDay(getLeave.recordset[0]);
+  res.redirect(`/viewleave/${ID}`);
+});
+
+router.post('/deleteleave', async function (req, res, next) {
+  const LID = req.body.LID;
+  const ID = req.body.ID;
+  await db.deleteLeaveByLID(LID);
+  res.redirect(`/viewleave/${ID}`);
+});
+
+
 
 module.exports = router;

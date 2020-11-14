@@ -40,7 +40,7 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownId">
                         <a class="dropdown-item" href="/Manpower/staff">Manpower</a>
                         <a class="dropdown-item" href="#">Holiday</a>
-                        <a class="dropdown-item" href="#">Leave</a>
+                        <a class="dropdown-item" href="/leave/staff">Leave</a>
                         <a class="dropdown-item" href="/position#">Position</a>
                         <a class="dropdown-item" href="#">Project Position</a>
                     </div>
@@ -54,7 +54,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header text-center">
-                    <h3 class="modal-title w-100 font-weight-bold">Add Phase</h3>
+                    <h3 class="modal-title w-100 font-weight-bold">ADD PHASE</h3>
                 </div>
                 <form action="/createphase" method="POST" class="needs-validation" novalidate>
                     <div class="col-10 m-auto">
@@ -127,9 +127,6 @@
                             <div class="md-form mb-2">
                                 <input type="text" name="tasksName" class="form-control" placeholder="Tasks Name"
                                     required>
-                                <div class="invalid-feedback">
-                                    Please fill out this field !!
-                                </div>
                             </div>
                         </div>
                         <input type="hidden" name="PID" value="<%= Projects.PID %>"></input>
@@ -162,7 +159,8 @@
                         </button>
                     </form>
                     <div class="ml-2"></div>
-                    <form action="/deletetasks" method="POST" class="needs-validation" novalidate>
+                    <form action="/deletetasks" method="POST" class="needs-validation" novalidate
+                        onsubmit="return validate(this);">
                         <input type="hidden" name="PID" value="<%= Projects.PID %>">
                         <input type="hidden" name="deleteTID" value="<%= task.TID %>">
                         <button type="submit" class="btn btn-danger">
@@ -217,7 +215,7 @@
                         </form>
                     </td>
                     <td class="text-center">
-                        <form action="/deletephase" method="POST">
+                        <form action="/deletephase" method="POST" onsubmit="return validate(this);">
                             <input type="hidden" name="phaseID" value="<%= phase.ID %>">
                             <input type="hidden" name="PID" value="<%= Projects.PID %>">
                             <input type="hidden" name="TID" value="<%= oneTask.TID %>">
@@ -263,6 +261,15 @@
                 });
             }, false);
         })();
+    </script>
+    <script>
+        function validate(form) {
+            if (confirm('Are you sure you want to delete this project')) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     </script>
 </body>
 

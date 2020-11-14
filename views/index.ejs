@@ -33,7 +33,7 @@
           <div class="dropdown-menu" aria-labelledby="dropdownId">
             <a class="dropdown-item" href="/Manpower/staff">Manpower</a>
             <a class="dropdown-item" href="#">Holiday</a>
-            <a class="dropdown-item" href="#">Leave</a>
+            <a class="dropdown-item" href="/leave/staff">Leave</a>
             <a class="dropdown-item" href="/position">Position</a>
             <a class="dropdown-item" href="#">Project Position</a>
           </div>
@@ -56,24 +56,18 @@
               <div class="form-group mt-2">
                 <label for="formGroupExampleInput2">Project Name</label>
                 <input type="text" class="form-control" name="projectName" placeholder="Project Name" required>
-                <div class="invalid-feedback">
-                  Please fill out this field !!
-                </div>
               </div>
               <div class="form-group mt-2">
                 <label for="formGroupExampleInput2">Partner</label>
-                <input type="text" class="form-control" name="partnerProject" value="ICONTEXT" required>
+                <input type="text" class="form-control" name="partnerProject" placeholder="Partner Name" required>
               </div>
               <div class="form-group mt-2">
                 <label for="formGroupExampleInput2">Customer</label>
-                <input type="text" class="form-control" name="customerProject" value="ICONTEXT" required>
+                <input type="text" class="form-control" name="customerProject" placeholder="Customer Name" required>
               </div>
               <div class="form-group mt-2">
                 <label for="formGroupExampleInput2">Start Date</label>
                 <input type="date" class="form-control" name="dateProject" required>
-                <div class="invalid-feedback">
-                  Please Select Start Date !!
-                </div>
               </div>
               <div class="text-center mt-2 mb-4">
                 <button type="submit" class="btn btn-primary font-weight-bold">Create Project</button>

@@ -393,6 +393,71 @@ async function deletePhaseByTID(ID) {
     }
 }
 
+async function getLeaveByID(ID) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select * from Leave where ID = '${ID}'`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function addLeave(newLeave) {
+    try {
+        const pool = await sql.connect(config);
+        const query =
+            `INSERT INTO Leave (StartDate,EndDate,Annotation,ID)
+        VALUES ('${newLeave[0]}','${newLeave[1]}','${newLeave[2]}','${newLeave[3]}')`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function getLeaveNewInsert() {
+    try {
+        const pool = await sql.connect(config);
+        const query = `SELECT TOP 1 LID , DATEDIFF(day, StartDate, EndDate) AS Day FROM Leave ORDER BY LID DESC`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function updateLeaveDay(newDay) {
+    try {
+        const pool = await sql.connect(config);
+        const query =
+            `Update Leave SET
+            Days = '${newDay.Day}'
+            Where LID = ${newDay.LID}`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function deleteLeaveByLID(ID) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `delete from Leave where LID = ${ID}`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
 module.exports = {
     getProject,
     addStaff,
@@ -422,4 +487,9 @@ module.exports = {
     getTasksByTID,
     deletePhase,
     deletePhaseByTID,
+    addLeave,
+    getLeaveByID,
+    getLeaveNewInsert,
+    updateLeaveDay,
+    deleteLeaveByLID,
 }
