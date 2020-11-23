@@ -29,8 +29,7 @@ async function getProjectByID(ID) {
     try {
         const pool = await sql.connect(config);
         const query = `select * from project where PID = ${ID}`;
-        const result = await pool.request()
-            .query(query)
+        const result = await pool.request().query(query)
         return result
     } catch (err) {
         console.log("MESSAGE " + err.message);
@@ -458,6 +457,20 @@ async function deleteLeaveByLID(ID) {
     }
 }
 
+async function getHoliday() {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select Subject , Start_Date from Holiday`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+
+
 module.exports = {
     getProject,
     addStaff,
@@ -492,4 +505,5 @@ module.exports = {
     getLeaveNewInsert,
     updateLeaveDay,
     deleteLeaveByLID,
+    getHoliday,
 }

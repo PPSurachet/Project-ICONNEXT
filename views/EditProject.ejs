@@ -32,7 +32,7 @@
                         aria-haspopup="true" aria-expanded="false">Master Data Management</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownId">
                         <a class="dropdown-item" href="/Manpower/staff">Manpower</a>
-                        <a class="dropdown-item" href="#">Holiday</a>
+                        <a class="dropdown-item" href="/Holiday">Holiday</a>
                         <a class="dropdown-item" href="/leave/staff">Leave</a>
                         <a class="dropdown-item" href="/position">Position</a>
                         <a class="dropdown-item" href="#">Project Position</a>
@@ -62,7 +62,8 @@
                 </div>
                 <div class="form-group mt-2">
                     <label for="formGroupExampleInput2">Start Date</label>
-                    <input type="date" class="form-control" name="editDateProject" required>
+                    <input type="date" class="form-control" name="editDateProject" value="<%= Projects.StartDate %>"
+                        required>
                 </div>
                 <input type="hidden" name="PID" value="<%= Projects.PID %>">
                 <div class="text-center mt-2 mb-4">
