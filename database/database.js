@@ -460,7 +460,7 @@ async function deleteLeaveByLID(ID) {
 async function getHoliday() {
     try {
         const pool = await sql.connect(config);
-        const query = `select Subject , Start_Date from Holiday`;
+        const query = `select Subject , Start_Date , End_Date from Holiday`;
         const result = await pool.request()
             .query(query)
         return result
@@ -469,6 +469,20 @@ async function getHoliday() {
     }
 }
 
+async function addHoliday(addHoliday) {
+    try {
+        const pool = await sql.connect(config);
+        const query =
+            `INSERT INTO Holiday
+        (Subject , Start_Date , Start_Time, End_Date , End_Time , All_day_event , Description ,Show_time_as , Location )
+        VALUES(N'${addHoliday[0]}' , '${addHoliday[1]}', null , '${addHoliday[2]}' , null , 1 , N'วันหยุด' , 3 , null);`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
 
 
 module.exports = {
@@ -506,4 +520,5 @@ module.exports = {
     updateLeaveDay,
     deleteLeaveByLID,
     getHoliday,
+    addHoliday,
 }

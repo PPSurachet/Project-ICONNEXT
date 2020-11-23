@@ -330,10 +330,25 @@ router.get('/Holiday', async function (req, res, next) {
       ArrayCalender[key] = {
         title: result.recordset[key].Subject,
         start: result.recordset[key].Start_Date,
+        end: result.recordset[key].End_Date
       }
     }
   }
   res.render('Holiday', { Holidays: result.recordset });
+});
+
+router.post('/addHoliday', async function (req, res, next) {
+  const Subject = req.body.Subject
+  const StartDate = req.body.StartDate;
+  const EndDate = req.body.EndDate;
+  const setStartDate = StartDate.substring(8, 10) + "/" + StartDate.substring(5, 7) + "/" + StartDate.substring(0, 4)
+  const setEndDate = EndDate.substring(8, 10) + "/" + EndDate.substring(5, 7) + "/" + EndDate.substring(0, 4)
+
+  const addHoliday = [Subject, setStartDate, setEndDate];
+
+  await db.addHoliday(addHoliday);
+
+  res.redirect('/Holiday');
 });
 
 module.exports = router;
