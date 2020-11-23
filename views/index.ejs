@@ -35,7 +35,6 @@
             <a class="dropdown-item" href="/Holiday">Holiday</a>
             <a class="dropdown-item" href="/leave/staff">Leave</a>
             <a class="dropdown-item" href="/position">Position</a>
-            <a class="dropdown-item" href="#">Project Position</a>
           </div>
         </li>
       </ul>
@@ -100,6 +99,9 @@
                 <form action="/deleteproject" method="POST" onsubmit="return validate(this);">
                   <input type="hidden" name="PID" value="<%= project.PID %>">
                   <button class="dropdown-item" type="submit">Delete</button>
+                </form>
+                <form action="/projectposition/<%= project.PID %>" method="GET">
+                  <button class="dropdown-item" type="submit">Project Position</button>
                 </form>
               </div>
             </div>

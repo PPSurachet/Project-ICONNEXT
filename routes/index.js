@@ -259,7 +259,8 @@ router.get('/position', async function (req, res, next) {
 router.post('/addposition', async function (req, res, next) {
   const Position = req.body.Position;
   const Description = req.body.Description;
-  const addPosition = [Position, Description];
+  const Cost = req.body.Cost;
+  const addPosition = [Position, Description, Cost];
   await db.addPosition(addPosition);
   res.redirect('/position');
 });
@@ -349,6 +350,47 @@ router.post('/addHoliday', async function (req, res, next) {
   await db.addHoliday(addHoliday);
 
   res.redirect('/Holiday');
+});
+
+
+router.get('/projectposition/:PID', async function (req, res, next) {
+  const PID = req.params.PID;
+  const Project = await db.getProjectByID(PID);
+  const Manpowers = await db.getManpowerInProject(PID);
+
+  var indexArray = 0;
+  let ObjectManpowerUsage = [];
+  let Usage, date;
+  for (const key in Manpowers.recordset) {
+    const element = Manpowers.recordset[key];
+    const result = await db.getUsageByManpower(element.Manpower, PID);
+    let calculateUsage = 0;
+    for (const i in result.recordset) {
+      Usage = result.recordset[i];
+      date = await db.calculateDate(Usage);
+      calculateUsage = calculateUsage + (parseInt(Usage.Usage.substring(0, Usage.Usage.length - 1)) * date.recordset[0].Day);
+      indexArray++;
+    }
+
+    const Cost = parseFloat(((calculateUsage / 100) * element.Cost) / 20)
+
+    ObjectManpowerUsage[key] = {
+      Name: element.Manpower,
+      Position: element.Position,
+      CostMonth: element.Cost,
+      Usage: parseFloat(calculateUsage / 100),
+      Cost: Cost,
+    }
+  }
+
+  let TotalCost = 0;
+  for (const key in ObjectManpowerUsage) {
+    if (ObjectManpowerUsage.hasOwnProperty(key)) {
+      const element = ObjectManpowerUsage[key];
+      TotalCost = TotalCost + element.Cost;
+    }
+  }
+  res.render('ProjectPosition', { Manpowers: ObjectManpowerUsage, Total: TotalCost, Project: Project.recordset[0] });
 });
 
 module.exports = router;

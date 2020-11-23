@@ -168,8 +168,8 @@ async function addPosition(newPosition) {
     try {
         const pool = await sql.connect(config);
         const query =
-            `INSERT INTO Positions (Position,Description)
-        VALUES ('${newPosition[0]}','${newPosition[1]}')`;
+            `INSERT INTO Positions (Position,Description,Cost)
+        VALUES ('${newPosition[0]}','${newPosition[1]}',${newPosition[2]})`;
         const result = await pool.request()
             .query(query)
         return result
@@ -484,6 +484,63 @@ async function addHoliday(addHoliday) {
     }
 }
 
+async function getManpowerInProject(PID) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select distinct Phase.Manpower , Positions.Position , Positions.Cost
+        from Phase , TasksProject , Project , Positions
+        where TasksProject.PID = Project.PID
+        and TasksProject.TID = Phase.TID
+        and Positions.Description = Phase.Role
+        and TasksProject.PID = ${PID}
+        order by Cost desc`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function getUsageByManpower(Manpower, PID) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select Phase.Usage , Phase.StartDate , Phase.EndDate
+        from Phase , TasksProject , Project
+        where TasksProject.PID = Project.PID
+        and TasksProject.TID = Phase.TID
+        and TasksProject.PID = ${PID}
+        and Phase.Manpower = '${Manpower}'`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function calculateDate(Object) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `declare @start datetime;
+        set @start = '${Object.StartDate}';
+
+        declare @end datetime;
+        set @end = '${Object.EndDate}';
+        SELECT 
+        (DATEDIFF(dd, @Start, @end) +1)  -- total number of days (inclusive)
+        -(DATEDIFF(wk, @Start, @end) * 2) -- number of complete weekends in period
+        -- remove partial weekend days, ie if starts on sunday or ends on saturday
+        -(CASE WHEN DATENAME(dw, @Start) = 'Sunday' THEN 1 ELSE 0 END) 
+        -(CASE WHEN DATENAME(dw, @end) = 'Saturday' THEN 1 ELSE 0 END) as Day`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
 
 module.exports = {
     getProject,
@@ -521,4 +578,7 @@ module.exports = {
     deleteLeaveByLID,
     getHoliday,
     addHoliday,
+    getManpowerInProject,
+    getUsageByManpower,
+    calculateDate,
 }
