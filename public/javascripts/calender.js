@@ -33,7 +33,6 @@ function getCalender(data) {
             events: eventObj,
             dateClick: function (info) {
                 $("#showModal").empty();
-                console.log(info);
                 const createModal =
                     /*html*/
                     `<div class="modal fade" id="myModal" role="dialog">
@@ -59,6 +58,31 @@ function getCalender(data) {
                                         <input type="hidden" name="StartDate" value="${info.dateStr}">
                                         <button type="submit" class="btn btn-primary">Confirm</button>
                                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>`
+                $("#showModal").append(createModal);
+                $("#myModal").modal();
+            },
+            eventClick: function (info) {
+                console.log(info);
+                $("#showModal").empty();
+                const createModal =
+                    /*html*/
+                    `<div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <form action="/deleteHoliday" method="POST" class="needs-validation" novalidate>
+                                    <div class="d-flex justify-content-between m-3">
+                                        <div>
+                                            <h4 class="modal-title">${info.event.title}</h4>
+                                        </div>
+                                        <div>
+                                            <input type="hidden" name="Subject" value="${info.event.title}">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>

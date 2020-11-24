@@ -352,6 +352,12 @@ router.post('/addHoliday', async function (req, res, next) {
   res.redirect('/Holiday');
 });
 
+router.post('/deleteHoliday', async function (req, res, next) {
+  const Subject = req.body.Subject;
+  await db.deleteHoliday(Subject);
+  res.redirect('/Holiday');
+});
+
 
 router.get('/projectposition/:PID', async function (req, res, next) {
   const PID = req.params.PID;

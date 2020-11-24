@@ -60,9 +60,11 @@
                 <tr>
                     <td class="font-weight-bold"><%= data.Name %></td>
                     <td class="text-center font-weight-bold"><%= data.Position %></td>
-                    <td class="text-center font-weight-bold"><%= data.CostMonth %></td>
+                    <td class="text-center font-weight-bold">
+                        <%= data.CostMonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
                     <td class="text-center font-weight-bold"><%= data.Usage %></td>
-                    <td class="text-center font-weight-bold"><%= data.Cost %></td>
+                    <td class="text-center font-weight-bold">
+                        <%= data.Cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
                 </tr>
                 <% })%>
                 <tr>

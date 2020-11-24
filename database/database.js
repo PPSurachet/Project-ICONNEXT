@@ -469,6 +469,18 @@ async function getHoliday() {
     }
 }
 
+async function deleteHoliday(Subject) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `delete from Holiday where Subject = N'${Subject}'`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
 async function addHoliday(addHoliday) {
     try {
         const pool = await sql.connect(config);
@@ -578,6 +590,7 @@ module.exports = {
     deleteLeaveByLID,
     getHoliday,
     addHoliday,
+    deleteHoliday,
     getManpowerInProject,
     getUsageByManpower,
     calculateDate,
