@@ -24,9 +24,6 @@
         <li class="nav-item active">
           <a class="nav-link" href="/project">Project Management</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Report</a>
-        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">Master Data Management</a>
@@ -102,6 +99,9 @@
                 </form>
                 <form action="/projectposition/<%= project.PID %>" method="GET">
                   <button class="dropdown-item" type="submit">Project Position</button>
+                </form>
+                <form action="/report/<%= project.PID %>" method="POST">
+                  <button class="dropdown-item" type="submit">Project Report</button>
                 </form>
               </div>
             </div>

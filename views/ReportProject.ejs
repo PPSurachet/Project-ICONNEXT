@@ -2,18 +2,14 @@
 <html lang="en">
 
 <head>
-    <title>Holiday</title>
+    <title>Project</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/stylesheets/main.min.css">
-
 </head>
 
 <body>
@@ -25,30 +21,42 @@
         </button>
         <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="/project">Project Management</a>
                 </li>
-                <li class="nav-item dropdown active">
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">Master Data Management</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownId">
                         <a class="dropdown-item" href="/Manpower/staff">Manpower</a>
                         <a class="dropdown-item" href="/Holiday">Holiday</a>
                         <a class="dropdown-item" href="/leave/staff">Leave</a>
-                        <a class="dropdown-item" href="/position#">Position</a>
+                        <a class="dropdown-item" href="/position">Position</a>
                     </div>
                 </li>
             </ul>
         </div>
     </nav>
-    <div id="showModal">
 
+    <div class="container mt-5">
+        <div class="row d-flex align-items-center mb-3">
+            <div class="text-left font-weight-bold h1"><%= Project.Name %></div>
+            <div class="ml-4">
+                <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <b>Select Month In Project</b>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <% Months.forEach(function(data){%>
+                    <form action="/report/<%= Project.PID %>/<%= data.Month %>">
+                        <button class="dropdown-item" type="submit"><%= data.Month %></button>
+                    </form>
+                    <%})%>
+                </div>
+            </div>
+        </div>
+        <canvas id="myChart" width="400" height="200"></canvas>
     </div>
-    <div class="container mt-5 mb-5">
-        <div id='calendar'></div>
-    </div>
-
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -58,13 +66,11 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-    <script src="/javascripts/main.min.js"></script>
-    <script src="/javascripts/calender.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script src="/javascripts/chart.js"></script>
     <script>
-        let rows = '<%- JSON.stringify(Holidays) %>'
-        getCalender(rows)
+        getChart('<%- JSON.stringify(ObjectManpower) %>', '<%- JSON.stringify(Holiday) %>');
     </script>
-
 </body>
 
 </html>

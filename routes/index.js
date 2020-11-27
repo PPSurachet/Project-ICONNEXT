@@ -309,10 +309,9 @@ router.post('/addLeave', async function (req, res, next) {
   const StartDate = req.body.StartDate;
   const EndDate = req.body.EndDate;
   const Annotation = req.body.Annotation;
-  const addLeave = [StartDate, EndDate, Annotation, ID]
+  const Days = await db.calculateDate({ StartDate: StartDate, EndDate: EndDate });
+  const addLeave = [StartDate, EndDate, Annotation, Days.recordset[0].Day, ID]
   await db.addLeave(addLeave);
-  const getLeave = await db.getLeaveNewInsert();
-  await db.updateLeaveDay(getLeave.recordset[0]);
   res.redirect(`/viewleave/${ID}`);
 });
 
@@ -373,6 +372,7 @@ router.get('/projectposition/:PID', async function (req, res, next) {
     let calculateUsage = 0;
     for (const i in result.recordset) {
       Usage = result.recordset[i];
+      console.log(Usage);
       date = await db.calculateDate(Usage);
       calculateUsage = calculateUsage + (parseInt(Usage.Usage.substring(0, Usage.Usage.length - 1)) * date.recordset[0].Day);
       indexArray++;
@@ -397,6 +397,45 @@ router.get('/projectposition/:PID', async function (req, res, next) {
     }
   }
   res.render('ProjectPosition', { Manpowers: ObjectManpowerUsage, Total: TotalCost, Project: Project.recordset[0] });
+});
+
+
+router.post('/report/:PID', async function (req, res, next) {
+  const PID = req.params.PID;
+  const Month = await db.getMonthInProject(PID);
+  res.redirect(`/report/${PID}/${Month.recordset[0].Month}`);
+});
+
+
+router.get('/report/:PID/:Month', async function (req, res, next) {
+  const PID = req.params.PID;
+  const month = req.params.Month;
+  const getProject = await db.getProjectByID(PID);
+  const getManpower = await db.getManpowerOfProject(PID, month);
+  const getHolidayInMonth = await db.getHolidayInMonth(month);
+  const getMonthInProject = await db.getMonthInProject(PID);
+
+  var manpowerObject = [];
+  let nameManpower = "";
+  for (const key in getManpower.recordset) {
+    const getIdEmployee = await db.checkIdEmployee(getManpower.recordset[key].Manpower);
+    const getIdOutsource = await db.checkIdOutsouce(getManpower.recordset[key].Manpower);
+    if (getIdEmployee.recordset[0] != null) {
+      nameManpower = getManpower.recordset[key].Manpower;
+      var getLeaveDay = await db.getLeaveInMonth(getIdEmployee.recordset[0].EID, month)
+    } else {
+      nameManpower = getManpower.recordset[key].Manpower;
+      var getLeaveDay = await db.getLeaveInMonth(getIdOutsource.recordset[0].ID, month)
+    }
+    manpowerObject[key] = {
+      Name: nameManpower,
+      Leave: getLeaveDay.recordset[0],
+    }
+  }
+  res.render('ReportProject', {
+    ObjectManpower: manpowerObject, Holiday: getHolidayInMonth.recordset,
+    Project: getProject.recordset[0], Months: getMonthInProject.recordset
+  });
 });
 
 module.exports = router;

@@ -408,20 +408,8 @@ async function addLeave(newLeave) {
     try {
         const pool = await sql.connect(config);
         const query =
-            `INSERT INTO Leave (StartDate,EndDate,Annotation,ID)
-        VALUES ('${newLeave[0]}','${newLeave[1]}','${newLeave[2]}','${newLeave[3]}')`;
-        const result = await pool.request()
-            .query(query)
-        return result
-    } catch (err) {
-        console.log("MESSAGE " + err.message);
-    }
-}
-
-async function getLeaveNewInsert() {
-    try {
-        const pool = await sql.connect(config);
-        const query = `SELECT TOP 1 LID , DATEDIFF(day, StartDate, EndDate) AS Day FROM Leave ORDER BY LID DESC`;
+            `INSERT INTO Leave (StartDate,EndDate,Annotation,Days,ID)
+        VALUES ('${newLeave[0]}','${newLeave[1]}','${newLeave[2]}','${newLeave[3]}','${newLeave[4]}')`;
         const result = await pool.request()
             .query(query)
         return result
@@ -553,6 +541,91 @@ async function calculateDate(Object) {
     }
 }
 
+async function getMonthInProject(PID) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `SELECT DISTINCT MONTH(Phase.StartDate) AS "Month"
+        from Project , TasksProject , Phase
+        where TasksProject.PID = Project.PID
+        and TasksProject.TID = Phase.TID
+        and Project.PID = ${PID}
+        group by Phase.StartDate`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function getManpowerOfProject(PID, Month) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select Phase.Manpower from Project , TasksProject , Phase
+        where TasksProject.PID = Project.PID
+        and TasksProject.TID = Phase.TID
+        and Project.PID = ${PID}
+        and Phase.StartDate LIKE '%%%%-${Month}-%%'
+        group by Phase.Manpower`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function checkIdEmployee(name) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select EID from Employee
+        where (Employee.Name + ' ' + Employee.SurName) = '${name}';`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function checkIdOutsouce(name) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select ID from Outsource
+        where (Outsource.Name + ' ' + Outsource.SurName) = '${name}';`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function getHolidayInMonth(Month) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select Start_Date from Holiday where Start_Date LIKE '%%/${Month}/%%';`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+async function getLeaveInMonth(ID, Month) {
+    try {
+        const pool = await sql.connect(config);
+        const query = `select * from Leave where ID = '${ID}' and StartDate LIKE '%%%%-${Month}-%%'`;
+        const result = await pool.request()
+            .query(query)
+        return result
+    } catch (err) {
+        console.log("MESSAGE " + err.message);
+    }
+}
+
+
 
 module.exports = {
     getProject,
@@ -585,7 +658,6 @@ module.exports = {
     deletePhaseByTID,
     addLeave,
     getLeaveByID,
-    getLeaveNewInsert,
     updateLeaveDay,
     deleteLeaveByLID,
     getHoliday,
@@ -594,4 +666,10 @@ module.exports = {
     getManpowerInProject,
     getUsageByManpower,
     calculateDate,
+    getManpowerOfProject,
+    checkIdOutsouce,
+    checkIdEmployee,
+    getMonthInProject,
+    getHolidayInMonth,
+    getLeaveInMonth,
 }
