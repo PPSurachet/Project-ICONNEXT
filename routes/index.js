@@ -410,6 +410,10 @@ router.post('/report/:PID', async function (req, res, next) {
 router.get('/report/:PID/:Month', async function (req, res, next) {
   const PID = req.params.PID;
   const month = req.params.Month;
+  const arrayMonth = ["", "January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"];
+
+
   const getProject = await db.getProjectByID(PID);
   const getManpower = await db.getManpowerOfProject(PID, month);
   const getHolidayInMonth = await db.getHolidayInMonth(month);
@@ -434,7 +438,8 @@ router.get('/report/:PID/:Month', async function (req, res, next) {
   }
   res.render('ReportProject', {
     ObjectManpower: manpowerObject, Holiday: getHolidayInMonth.recordset,
-    Project: getProject.recordset[0], Months: getMonthInProject.recordset
+    Project: getProject.recordset[0], Months: getMonthInProject.recordset,
+    monthName: arrayMonth[month],
   });
 });
 

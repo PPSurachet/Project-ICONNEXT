@@ -39,12 +39,17 @@ const getChart = (ObjectManpower, Holiday) => {
                     label: "Work",
                     backgroundColor: 'rgba(54, 162, 235, 0.8)',
                     data: dataWork,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 3
                 },
                 {
                     label: "Plan",
                     backgroundColor: 'rgba(54, 162, 235, 0.3)',
-                    data: dataPlan
+                    data: dataPlan,
+                    borderColor: 'rgba(54, 162, 235, 0.4)',
+                    borderWidth: 3
                 },
+
             ]
         },
         options: {
